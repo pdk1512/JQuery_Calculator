@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <title>Calculator</title>
+</head>
+<body>
+    <div class="d-flex flex-column justify-content-center align-items-center p-2 rounded shadow-lg main">
+        <div id="sub-display" class="p-2"></div>
+        <div id="display" class="p-2">0</div>
+        <div class="container buttons flex-fill d-flex flex-column justify-content-between">
+            <div class="row flex-fill">
+                <button id="clear" class="col-3 btn btn-dark font-weight-bold font-size-btn border-black-1">C</button>
+                <button id="sign" class="col-3 btn btn-dark font-weight-bold font-size-btn border-black-1">+/-</button>
+                <button id="percent" class="col-3 btn btn-dark font-weight-bold font-size-btn border-black-1">%</button>
+                <button id="division" class="col-3 btn btn-warning font-weight-bold font-size-btn border-black-1 operator-btn">&divide;</button>
+            </div>
+            <div class="row flex-fill">
+                <button id="seven" class="col-3 btn btn-secondary font-weight-bold font-size-btn border-black-1 number-btn">7</button>
+                <button id="eight" class="col-3 btn btn-secondary font-weight-bold font-size-btn border-black-1 number-btn">8</button>
+                <button id="nine" class="col-3 btn btn-secondary font-weight-bold font-size-btn border-black-1 number-btn">9</button>
+                <button id="multiply" class="col-3 btn btn-warning font-weight-bold font-size-btn border-black-1 operator-btn">&times;</button>
+            </div>
+            <div class="row flex-fill">
+                <button id="four" class="col-3 btn btn-secondary font-weight-bold font-size-btn border-black-1 number-btn">4</button>
+                <button id="five" class="col-3 btn btn-secondary font-weight-bold font-size-btn border-black-1 number-btn">5</button>
+                <button id="six" class="col-3 btn btn-secondary font-weight-bold font-size-btn border-black-1 number-btn">6</button>
+                <button id="minus" class="col-3 btn btn-warning font-weight-bold font-size-btn border-black-1 operator-btn">-</button>
+            </div>
+            <div class="row flex-fill">
+                <button id="one" class="col-3 btn btn-secondary font-weight-bold font-size-btn border-black-1 number-btn">1</button>
+                <button id="two" class="col-3 btn btn-secondary font-weight-bold font-size-btn border-black-1 number-btn">2</button>
+                <button id="three" class="col-3 btn btn-secondary font-weight-bold font-size-btn border-black-1 number-btn">3</button>
+                <button id="plus" class="col-3 btn btn-warning font-weight-bold font-size-btn border-black-1 operator-btn">+</button>
+            </div>
+            <div class="row flex-fill">
+                <button id="zero" class="col-6 btn btn-secondary font-weight-bold font-size-btn border-black-1 number-btn">0</button>
+                <button id="demical" class="col-3 btn btn-secondary font-weight-bold font-size-btn border-black-1">,</button>
+                <button id="equal" class="col-3 btn btn-warning font-weight-bold font-size-btn border-black-1">=</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
