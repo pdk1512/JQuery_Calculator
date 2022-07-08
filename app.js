@@ -3,14 +3,13 @@ let value2 = '';
 let operator = '';
 let clickEqual = false;
 
+const numbersArray = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+const operatorArray = ['+', '-', '/', '*'];
+
 $(document).ready(function(){
 
     $('#clear').click(function(){
-        value1 = '';
-        value2 = '';
-        operator = '';
-        $('#display').html('0');
-        $('#sub-display').html('');
+        resetCalculator();
     });
 
     $('.number-btn').each(function(index, numButton){
@@ -26,10 +25,7 @@ $(document).ready(function(){
     });
 
     $('#equal').click(function(){
-        if(!value1) return;
-        $('#display').html(calculate());
-        $('#sub-display').html('');
-        clickEqual = true;
+        clickEqualSign();
     });
 
     $('#sign').click(function(){
@@ -42,6 +38,31 @@ $(document).ready(function(){
 
     $('#percent').click(function(){
         clickPercentSign();
+    });
+
+    $(document).keydown(function(event){
+        if(numbersArray.includes(event.key)){
+            clickNumberButton(event.key);
+        }
+        if(operatorArray.includes(event.key)){
+            let operatorText = event.key === '*' ? '×' : event.key === '/' ? '÷' : event.key;
+            clickOperatorButton(operatorText);
+        }
+        if(['=', 'Enter'].includes(event.key)){
+            clickEqualSign();
+        }
+        if([',', '.'].includes(event.key)){
+            clickDemicalSign();
+        }
+        if(event.key === '%'){
+            clickPercentSign();
+        }
+        if(event.key === 'Backspace'){
+            pressBackspaceButton();
+        }
+        if(event.key === 'Escape'){
+            resetCalculator();
+        }
     });
 
 });
@@ -82,7 +103,7 @@ function toggleNegativePositive(){
         $('#display').html(value2);
     }else{
         value1 = Number(value1) < 0 ? value1.slice(1) : '-' + value1;
-        $('#display').html(value1);
+        $('#display').html(value1 + operator);
     }
 }
 
@@ -108,6 +129,37 @@ function clickPercentSign(){
         value1 += '%';
         $('#display').html(value1);
     }
+}
+
+function clickEqualSign(){
+    if(!value1) return;
+    $('#display').html(calculate());
+    $('#sub-display').html('');
+    clickEqual = true;
+}
+
+function pressBackspaceButton(){
+    if(operator){
+        if(value2){
+            value2 = value2.slice(0, -1);
+            $('#display').html(value2 ? value2 : value1 + operator);
+            $('#sub-display').html(value2 ? value1 + operator : '');
+        }else{
+            $('#display').html($('#display').text().slice(0, -1));
+            operator = '';
+        }
+    }else{
+        value1 = value1.slice(0, -1);
+        $('#display').html(value1 ? value1 : '0');
+    }
+}
+
+function resetCalculator(){
+    value1 = '';
+    value2 = '';
+    operator = '';
+    $('#display').html('0');
+    $('#sub-display').html('');
 }
 
 function calculate(){
