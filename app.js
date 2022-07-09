@@ -183,8 +183,17 @@ function calculate(){
             result = value1 / value2;
             break;
     }
+    if(countDemicals(result) > 8){
+        result = Number.parseFloat(result).toFixed(8);
+    }
     value1 = result.toString();
     value2 = '';
     operator = '';
     return value1;
+}
+
+function countDemicals(value) {
+    if ((value % 1) != 0) 
+        return value.toString().split(".")[1].length;  
+    return 0;
 }
