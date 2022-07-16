@@ -68,19 +68,30 @@ $(document).ready(function(){
 });
 
 function clickNumberButton(numberText){
-    if($('#display').text().endsWith('%')) return;
+    // if($('#display').text().endsWith('%')) return;
     if(operator){
-        value2 += numberText;
+        if(value2 === '0'){
+            value2 = numberText;
+        }else if(value2 === '-0'){
+            value2 = '-' + numberText;
+        }else{
+            value2 += numberText;
+        }
         $('#display').html(value2);
         value1 = value1.endsWith('.') ? value1.slice(0, -1) : value1;
         $('#sub-display').html(value1 + operator);
     }else{
-        // If users click number button right after they click equal button
         if(clickEqual){
             value1 = '';
             clickEqual = false;
         }
-        value1 += numberText;
+        if(value1 === '0'){
+            value1 = numberText;
+        }else if(value1 === '-0'){
+            value1 = '-' + numberText;
+        }else{
+            value1 += numberText;
+        }
         $('#display').html(value1);
     }
 }
@@ -97,37 +108,53 @@ function clickOperatorButton(operatorText){
 }
 
 function toggleNegativePositive(){
-    if($('#display').text() === '0') return;
     if(value2){
         value2 = Number(value2) < 0 ? value2.slice(1) : '-' + value2;
         $('#display').html(value2);
     }else{
-        value1 = Number(value1) < 0 ? value1.slice(1) : '-' + value1;
+        value1 = !value1 ? '-0' : value1.includes('-') ? value1.slice(1) : '-' + value1;
         $('#display').html(value1 + operator);
     }
 }
 
 function clickDemicalSign(){
+    if(clickEqual){
+        value1 = '0.';
+        $('#display').html(value1);
+        clickEqual = false;
+    }
     if($('#display').text().endsWith('%') || $('#display').text().includes(".")) return;
     if(operator){
         value2 = value2 ? value2 += '.' : '0.';
         $('#display').html(value2);
     }else{
         value1 = value1 ? value1 += '.' : '0.';
+        clickEqual = false;
         $('#display').html(value1);
     }
 }
 
+// function clickPercentSign(){
+//     if($('#display').text().endsWith('%') || $('#display').text().endsWith(".")) return;
+//     if(operator){
+//         if(!value2) return;
+//         value2 += '%';
+//         $('#display').html(value2);
+//     }else{
+//         if(!value1) return;
+//         value1 += '%';
+//         $('#display').html(value1);
+//     }
+// }
+
 function clickPercentSign(){
-    if($('#display').text().endsWith('%') || $('#display').text().endsWith(".")) return;
-    if(operator){
-        if(!value2) return;
-        value2 += '%';
-        $('#display').html(value2);
-    }else{
-        if(!value1) return;
-        value1 += '%';
+    if(!value1) return;
+    if(!value2){
+        value1 = (Number(value1) / 100).toString();
         $('#display').html(value1);
+    }else{
+        value2 = value2 === '0' ? value2 : (Number(value2)/100).toString();
+        $('#display').html(value2);
     }
 }
 
@@ -158,17 +185,21 @@ function resetCalculator(){
     value1 = '';
     value2 = '';
     operator = '';
+    clickEqual = false;
     $('#display').html('0');
     $('#sub-display').html('');
 }
 
 function calculate(){
+    // value1 = value1.endsWith('%') ? Number(value1.slice(0, -1))/100 : Number(value1);
     if(!operator || !value2){
-        return value1.endsWith('.') ? value1.slice(0, -1) : value1;
+        value1 = value1.toString();
+        return value1;
     }
     let result = 0;
-    value1 = value1.endsWith('%') ? Number(value1.slice(0, -1))/100 : Number(value1);
-    value2 = value2.endsWith('%') ? Number(value2.slice(0, -1))/100 : Number(value2);
+    value1 = Number(value1);
+    value2 = Number(value2);
+    // value2 = value2.endsWith('%') ? Number(value2.slice(0, -1))/100 : Number(value2);
     switch(operator){
         case '+':
             result = value1 + value2;
@@ -183,8 +214,8 @@ function calculate(){
             result = value1 / value2;
             break;
     }
-    if(countDemicals(result) > 8){
-        result = Number.parseFloat(result).toFixed(8);
+    if(countDemicals(result) > 12){
+        result = Number.parseFloat(result).toFixed(12);
     }
     value1 = result.toString();
     value2 = '';
