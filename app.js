@@ -33,7 +33,7 @@ $(document).ready(function(){
     });
 
     $('#demical').click(function(){
-        clickDemicalSign();
+        clickFloatPointSign();
     });
 
     $('#percent').click(function(){
@@ -52,7 +52,7 @@ $(document).ready(function(){
             clickEqualSign();
         }
         if([',', '.'].includes(event.key)){
-            clickDemicalSign();
+            clickFloatPointSign();
         }
         if(event.key === '%'){
             clickPercentSign();
@@ -68,7 +68,7 @@ $(document).ready(function(){
 });
 
 function clickNumberButton(numberText){
-    // if($('#display').text().endsWith('%')) return;
+    if($('#display').text().length === 14) return;
     if(operator){
         if(value2 === '0'){
             value2 = numberText;
@@ -94,6 +94,7 @@ function clickNumberButton(numberText){
         }
         $('#display').html(value1);
     }
+    changeDisplayFontSize();
 }
 
 function clickOperatorButton(operatorText){
@@ -104,7 +105,8 @@ function clickOperatorButton(operatorText){
     }
     clickEqual = false;
     operator = operatorText;
-    $('#display').html(value1 + operator);
+    $('#display').html(formatNumberDisplay(value1) + operator);
+    changeDisplayFontSize();
 }
 
 function toggleNegativePositive(){
@@ -115,15 +117,17 @@ function toggleNegativePositive(){
         value1 = !value1 ? '-0' : value1.includes('-') ? value1.slice(1) : '-' + value1;
         $('#display').html(value1 + operator);
     }
+    changeDisplayFontSize();
 }
 
-function clickDemicalSign(){
+function clickFloatPointSign(){
+    if($('#display').text().length === 14) return;
     if(clickEqual){
         value1 = '0.';
         $('#display').html(value1);
         clickEqual = false;
     }
-    if($('#display').text().endsWith('%') || $('#display').text().includes(".")) return;
+    if($('#display').text().includes(".")) return;
     if(operator){
         value2 = value2 ? value2 += '.' : '0.';
         $('#display').html(value2);
@@ -132,43 +136,33 @@ function clickDemicalSign(){
         clickEqual = false;
         $('#display').html(value1);
     }
+    changeDisplayFontSize();
 }
-
-// function clickPercentSign(){
-//     if($('#display').text().endsWith('%') || $('#display').text().endsWith(".")) return;
-//     if(operator){
-//         if(!value2) return;
-//         value2 += '%';
-//         $('#display').html(value2);
-//     }else{
-//         if(!value1) return;
-//         value1 += '%';
-//         $('#display').html(value1);
-//     }
-// }
 
 function clickPercentSign(){
     if(!value1) return;
     if(!value2){
-        value1 = (Number(value1) / 100).toString();
-        $('#display').html(value1);
+        value1 = Number(value1) / 100;
+        $('#display').html(formatNumberDisplay(value1) + operator);
     }else{
-        value2 = value2 === '0' ? value2 : (Number(value2)/100).toString();
-        $('#display').html(value2);
+        value2 = value2 === '0' ? value2 : Number(value2) / 100;
+        $('#display').html(formatNumberDisplay(value2));
     }
+    changeDisplayFontSize();
 }
 
 function clickEqualSign(){
     if(!value1) return;
-    $('#display').html(calculate());
+    $('#display').html(formatNumberDisplay(calculate()));
     $('#sub-display').html('');
     clickEqual = true;
+    changeDisplayFontSize();
 }
 
 function pressBackspaceButton(){
     if(operator){
         if(value2){
-            value2 = value2.slice(0, -1);
+            value2 = $('#display').text().slice(0, -1);
             $('#display').html(value2 ? value2 : value1 + operator);
             $('#sub-display').html(value2 ? value1 + operator : '');
         }else{
@@ -176,9 +170,10 @@ function pressBackspaceButton(){
             operator = '';
         }
     }else{
-        value1 = value1.slice(0, -1);
+        value1 = $('#display').text().slice(0, -1);
         $('#display').html(value1 ? value1 : '0');
     }
+    changeDisplayFontSize();
 }
 
 function resetCalculator(){
@@ -188,43 +183,49 @@ function resetCalculator(){
     clickEqual = false;
     $('#display').html('0');
     $('#sub-display').html('');
+    changeDisplayFontSize();
 }
 
 function calculate(){
-    // value1 = value1.endsWith('%') ? Number(value1.slice(0, -1))/100 : Number(value1);
     if(!operator || !value2){
         value1 = value1.toString();
         return value1;
     }
-    let result = 0;
     value1 = Number(value1);
     value2 = Number(value2);
-    // value2 = value2.endsWith('%') ? Number(value2.slice(0, -1))/100 : Number(value2);
     switch(operator){
         case '+':
-            result = value1 + value2;
+            value1 += value2;
             break;
         case '-':
-            result = value1 - value2;
+            value1 -= value2;
             break;
         case '×':
-            result = value1 * value2;
+            value1 *= value2;
             break;
         case '÷':
-            result = value1 / value2;
+            if(value2 === 0){
+                resetCalculator();
+                $('#display').html('ERROR!');
+                return;
+            }
+            value1 /= value2;
             break;
     }
-    if(countDemicals(result) > 12){
-        result = Number.parseFloat(result).toFixed(12);
-    }
-    value1 = result.toString();
+    value1 = value1.toString();
     value2 = '';
     operator = '';
     return value1;
 }
 
-function countDemicals(value) {
-    if ((value % 1) != 0) 
-        return value.toString().split(".")[1].length;  
-    return 0;
+function formatNumberDisplay(value){
+    return +parseFloat(value).toPrecision(12).toString();
+}
+
+function changeDisplayFontSize(){
+    if($('#display').text().length > 14){
+        $('#display').css('font-size', '2.5rem');
+    }else{
+        $('#display').css('font-size', '3rem');
+    }
 }
